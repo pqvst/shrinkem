@@ -2,7 +2,7 @@
 
 just shrink 'em! a simple easy-to-use cli command line tool to shrink/resize and compress images, making them smaller, powered by [sharp](https://sharp.pixelplumbing.com/).
 
-# example
+## example
 
 ```
 $ shrinkem images/ --size 1200
@@ -35,7 +35,7 @@ and run it:
 npm run shrink
 ```
 
-# options
+## options
 
 ```
 -v, --verbose     verbose output
@@ -57,10 +57,10 @@ jpg,jpeg,png,webp
 
 refer to [sharp](https://sharp.pixelplumbing.com/) documentation for supported extensions
 
-# license
+## license
 
 MIT
 
-# todo
+## todo
 
 reduce dependencies
