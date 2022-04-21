@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const minimist = require('minimist');
 const sharp = require('sharp');
 const glob = require('glob');
