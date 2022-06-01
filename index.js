@@ -102,6 +102,11 @@ async function main() {
     return true;
   });
 
+  if (files.length == 0) {
+    console.log('No images found ¯\\_(ツ)_/¯');
+    return;
+  }
+
   const filesToShrink = [];
   for (const file of files) {
     if (await checkFile(file)) {
@@ -111,7 +116,7 @@ async function main() {
 
   const count = filesToShrink.length;
   if (count <= 0) {
-    console.log('No images found ¯\\_(ツ)_/¯');
+    console.log('No images to shrink ¯\\_(ツ)_/¯');
     return;
   }
 
