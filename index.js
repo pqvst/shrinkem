@@ -2,12 +2,12 @@
 
 const minimist = require('minimist');
 const sharp = require('sharp');
-const glob = require('glob');
+const readdirp = require('readdirp');
 const fs = require('fs');
 const path = require('path');
 const yesno = require('yesno');
 
-const DEFAULT_EXTENSIONS = 'jpg,jpeg,png,webp';
+const DEFAULT_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
 
 const argv = minimist(process.argv.slice(2));
 
@@ -22,12 +22,26 @@ if (argv.help || argv.h) {
   console.log('  -w, --width', '      max width');
   console.log('  -h, --height', '     max height');
   console.log('  -s, --size', '       max width and height');
-  console.log('  -e, --extensions', ' image extensions to find (comma separated)');
+  console.log('  -e, --ext', '        image extension to find (multi-arg)');
   console.log('  -f, --force', '      continue without confirmation');
+  console.log('  -i, --ignore', '     ignore files/directories (multi-arg)');
   console.log();
   console.log('Default extensions:');
-  console.log(`  ${DEFAULT_EXTENSIONS}`);
+  console.log(`  ${DEFAULT_EXTENSIONS.join(', ')}`);
   process.exit();
+}
+
+function ensureArrayArg(obj) {
+  if (obj === true) {
+    // arg was passed as a bool
+    return null;
+  }
+  if (obj) {
+    if (!Array.isArray(obj)) {
+      return [obj];
+    }
+    return obj;
+  }
 }
 
 const FORCE          = argv.f || argv.force || false;
@@ -36,11 +50,12 @@ const DRY_RUN        = argv.d || argv.dry || false;
 const KEEP_ORIGINALS = argv.k || argv.keep || false;
 const MAX_WIDTH      = argv.w || argv.width || argv.s || argv.size;
 const MAX_HEIGHT     = argv.h || argv.height || argv.s || argv.size;
-const EXTENSIONS     = (argv.e || argv.extensions || DEFAULT_EXTENSIONS).split(',');
+const EXTENSIONS     = ensureArrayArg(argv.e || argv.ext) || DEFAULT_EXTENSIONS;
+const IGNORE         = ensureArrayArg(argv.i || argv.ignore) || [];
 const ROOT           = path.resolve(argv._[0] || '.');
 
-const hasWidth = Number.isFinite(MAX_WIDTH);
-const hasHeight = Number.isFinite(MAX_HEIGHT);
+const hasWidth       = Number.isFinite(MAX_WIDTH);
+const hasHeight      = Number.isFinite(MAX_HEIGHT);
 
 if (!hasWidth && !hasHeight) {
   console.error('You must specify size or width and/or height');
@@ -55,12 +70,8 @@ if (VERBOSE) {
   console.log('[dry run]', DRY_RUN);
   console.log('[keep originals]', KEEP_ORIGINALS);
   console.log('[root]', ROOT);
-  console.log('[extensions]', EXTENSIONS.join(', '));
-}
-
-const pattern = path.join(ROOT, `**/*.+(${EXTENSIONS.join('|')})`);
-if (VERBOSE) {
-  console.log('[pattern]', pattern);
+  console.log('[extensions]', EXTENSIONS.join(', ') || '<none>');
+  console.log('[ignore]', IGNORE.join(', ') || '<none>');
   console.log('--');
 }
 
@@ -69,11 +80,24 @@ const sharpResizeOpts = {
   withoutEnlargement: true
 };
 
-glob(pattern, async (err, files) => {
-  if (err) {
-    throw err;
-  }
-  
+main();
+
+async function main() {
+  const fileFilter = EXTENSIONS.map(ext => `*.${ext}`);
+  const entries = await readdirp.promise(ROOT, { fileFilter });
+  const unfilteredFiles = entries.map(e => e.path);
+
+  const files = unfilteredFiles.filter(file => {
+    for (const ignore of IGNORE) {
+      if (file.includes(ignore)) {
+        console.log('[exclude]', file);
+        return false;  
+      }
+    }
+    console.log('[include]', file)
+    return true;
+  });
+
   const filesToShrink = [];
   for (const file of files) {
     if (await checkFile(file)) {
@@ -93,7 +117,7 @@ glob(pattern, async (err, files) => {
       await shrinkFile(file);
     }
   }
-});
+}
 
 async function checkFile(file) {
   const rel = path.relative(ROOT, file);

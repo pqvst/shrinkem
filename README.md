@@ -45,14 +45,15 @@ npm run shrink
 -w, --width       max width
 -h, --height      max height
 -s, --size        max width and height
--e, --extensions  image extensions to find (comma separated)
+-e, --ext         image extension to find (multi-arg)
 -f, --force       continue without confirmation
+-i, --ignore      ignore files/directories (multi-arg)
 ```
 
 defaults extensions:
 
 ```
-jpg,jpeg,png,webp
+jpg, jpeg, png, webp
 ```
 
 refer to [sharp](https://sharp.pixelplumbing.com/) documentation for supported extensions
@@ -63,4 +64,5 @@ MIT
 
 ## todo
 
-reduce dependencies
+- reduce dependencies
+- add tests
