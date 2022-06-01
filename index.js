@@ -85,7 +85,7 @@ main();
 async function main() {
   const fileFilter = EXTENSIONS.map(ext => `*.${ext}`);
   const entries = await readdirp.promise(ROOT, { fileFilter });
-  const unfilteredFiles = entries.map(e => e.path);
+  const unfilteredFiles = entries.map(e => e.fullPath);
 
   const files = unfilteredFiles.filter(file => {
     for (const ignore of IGNORE) {
