@@ -90,11 +90,15 @@ async function main() {
   const files = unfilteredFiles.filter(file => {
     for (const ignore of IGNORE) {
       if (file.includes(ignore)) {
-        console.log('[exclude]', file);
+        if (VERBOSE) {
+          console.log('[exclude]', file);
+        }
         return false;  
       }
     }
-    console.log('[include]', file)
+    if (VERBOSE) {
+      console.log('[include]', file)
+    }
     return true;
   });
 
