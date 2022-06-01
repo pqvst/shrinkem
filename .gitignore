@@ -1,1 +1,4 @@
 node_modules
+images/
+yarn.lock
+package-lock.json
