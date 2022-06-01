@@ -58,6 +58,20 @@ jpg, jpeg, png, webp
 
 refer to [sharp](https://sharp.pixelplumbing.com/) documentation for supported extensions
 
+## examples
+
+jpg and jpeg files only:
+
+```
+$ shrinkem images/ --size 1200 --ext jpg --ext jpeg
+```
+
+ignore any path containing the word 'foo':
+
+```
+$ shrinkem images/ --size 1200 --ignore foo
+```
+
 ## license
 
 MIT
