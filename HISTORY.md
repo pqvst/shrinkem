@@ -1,3 +1,11 @@
+
+
+## 2.0.1
+
+- Fixing bad path
+- Adding missing verbose check
+- Improving empty message
+
 ## 2.0
 
 - [Breaking] Renamed `--extensions` arg to `--ext`

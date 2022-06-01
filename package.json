@@ -1,6 +1,6 @@
 {
   "name": "shrinkem",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "just shrink 'em! a simple easy-to-use cli command line tool to shrink/resize and compress images, powered by sharp.",
   "main": "index.js",
   "bin": {
