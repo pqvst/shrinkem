@@ -1,5 +1,9 @@
 
 
+## 2.1.0
+
+- Fixing case-insensitive file filter
+
 ## 2.0.1
 
 - Fixing bad path

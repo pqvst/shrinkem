@@ -83,24 +83,33 @@ const sharpResizeOpts = {
 main();
 
 async function main() {
-  const fileFilter = EXTENSIONS.map(ext => `*.${ext}`);
-  const entries = await readdirp.promise(ROOT, { fileFilter });
-  const unfilteredFiles = entries.map(e => e.fullPath);
 
-  const files = unfilteredFiles.filter(file => {
+  function fileFilter(file) {
+    const lowerCaseFilePath = file.path.toLowerCase();
+
+    // check file extension
+    const ext = path.extname(lowerCaseFilePath).slice(1);
+    if (!EXTENSIONS.includes(ext)) {
+      return false;
+    }
+
+    // check ignores
     for (const ignore of IGNORE) {
-      if (file.includes(ignore)) {
+      if (lowerCaseFilePath.includes(ignore)) {
         if (VERBOSE) {
-          console.log('[exclude]', file);
+          console.log('[ignore]', file.path);
         }
-        return false;  
+        return false;
       }
     }
     if (VERBOSE) {
-      console.log('[include]', file)
+      console.log('[include]', file.path);
     }
     return true;
-  });
+  }
+
+  const entries = await readdirp.promise(ROOT, { fileFilter });
+  const files = entries.map(e => e.fullPath);
 
   if (files.length == 0) {
     console.log('No images found ¯\\_(ツ)_/¯');
