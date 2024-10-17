@@ -2,7 +2,7 @@
 
 const minimist = require('minimist');
 const sharp = require('sharp');
-const readdirp = require('readdirp');
+const { readdirpPromise } = require('readdirp');
 const fs = require('fs');
 const path = require('path');
 const yesno = require('yesno');
@@ -108,7 +108,7 @@ async function main() {
     return true;
   }
 
-  const entries = await readdirp.promise(ROOT, { fileFilter });
+  const entries = await readdirpPromise(ROOT, { fileFilter });
   const files = entries.map(e => e.fullPath);
 
   if (files.length == 0) {
