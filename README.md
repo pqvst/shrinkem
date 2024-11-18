@@ -23,7 +23,7 @@ or add it to your npm scripts:
 {
   ...
   "scripts": {
-    "shrink": "shrinkrem images/ --size 1200"
+    "shrink": "shrinkem images/ --size 1200"
   },
   ...
 }
